@@ -17,3 +17,10 @@ $ docker-compose exec web venv/bin/python manage.py update_icons
 $ docker-compose exec web venv/bin/python manage.py generate_top_words
 ```
 
+### Create an admin User
+
+This command creates an admin user. The admin interface is available at [http://localhost:8000/admin](http://localhost:8000/admin).
+
+```shell
+$ docker-compose exec web venv/bin/python manage.py createsuperuser
+```
