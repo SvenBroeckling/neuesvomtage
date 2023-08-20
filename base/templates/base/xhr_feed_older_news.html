@@ -1,0 +1,20 @@
+{% load base_extras humanize %}
+<div class="row">
+    <div class="col-md-12 col-sm-12 source">
+        <ul>
+            {% entry_list feed q=q limit=150 as entry_list %}
+            {% for e in entry_list %}
+                {% ifchanged e.created_at|date:"d"%}
+                    </ul>
+                    <h2>{{ e.created_at|date:"d.m." }}</h2>
+                    <ul>
+                {% endifchanged %}
+                <li>
+                    <a href="{{ e.url }}">{{ e }}</a>
+                    <span class="{% if e.is_new %}new{% endif %} small"
+                          title="{{ e.created_at|date:"d.m.Y H:i" }}">{{ e.created_at|naturalday }} {{ e.created_at|date:"H:i" }}</span>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>

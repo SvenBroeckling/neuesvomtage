@@ -1,0 +1,51 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-04-02 01:56+0200\n"
+"PO-Revision-Date: 2022-04-02 01:56+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.0.1\n"
+
+#: base/models.py:115
+msgid "entries"
+msgstr "Einträge"
+
+#: templates/base.html:36
+msgid "Quiz"
+msgstr "Quiz"
+
+#: templates/base.html:40
+msgid "Contact / Data privacy"
+msgstr "Kontakt / Datenschutz"
+
+#: templates/base.html:50 templates/base.html:51
+msgid "Search"
+msgstr "Suchen"
+
+#: templates/base/index.html:115
+msgid "Feed"
+msgstr "Feed"
+
+#: templates/base/index.html:121 templates/base/index.html:155
+msgid "Close"
+msgstr "Schließen"
+
+#: templates/base/index.html:131
+msgid "Sort feeds"
+msgstr "Feeds sortieren"
+
+#: templates/base/index.html:196
+msgid "Show older"
+msgstr "Ältere anzeigen"

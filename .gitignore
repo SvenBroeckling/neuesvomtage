@@ -1,0 +1,10 @@
+*.pyc
+.env
+.idea
+.vscode
+db.sqlite3
+localsettings.py
+neuesvomtage.sql.bz2
+node_modules
+media_files
+static_files

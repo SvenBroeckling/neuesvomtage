@@ -1,0 +1,242 @@
+{% extends 'base.html' %}
+{% load base_extras humanize i18n thumbnail %}
+
+{% block javascript %}
+    <script type="text/javascript">
+        $(function () {
+            // Modals
+            $('#feedModal').on('show.bs.modal', function (event) {
+                const trigger = $(event.relatedTarget);
+                const modal = $(this);
+
+                modal.find('h5').text(trigger.data('modal-title'));
+                modal.find('.modal-body').load(trigger.data('update-url'));
+            });
+
+            $('#sortModal').on('hide.bs.modal', function (event) {
+                location.reload();
+            });
+
+            // Sorting
+            jQuery.fn.sortElements = function sortElements(selector = "div") {
+                $("> " + selector, this[0]).sort(dec_sort).appendTo(this[0]);
+
+                function dec_sort(a, b) {
+                    return ($(b).data("order")) < ($(a).data("order")) ? 1 : -1;
+                }
+            };
+
+            function saveSortOrder() {
+                let order = [];
+                let hidden = [];
+                $('.sortable li').each(function (idx, e) {
+                    order.push($(e).data('source-id'));
+                    if ($(e).data('sort-hidden')) {
+                        hidden.push($(e).data('source-id'));
+                    }
+                });
+                localStorage.setItem('sort-order', JSON.stringify(order));
+                localStorage.setItem('sort-hidden', JSON.stringify(hidden));
+            }
+
+            function swapElements(elem1, elem2) {
+                let t_elem1 = $(elem1).clone();
+                let t_elem2 = $(elem2).clone();
+                $(elem1).replaceWith(t_elem2);
+                $(elem2).replaceWith(t_elem1);
+            }
+
+            let sort_sources = $('.sort-sources');
+            sort_sources.on('click', '.sort-move-top', function (e) {
+                let elem = $(this).parent();
+                let container = $(this).parent().parent();
+                container.prepend(elem);
+                saveSortOrder();
+            });
+
+            sort_sources.on('click', '.sort-move-up', function (e) {
+                swapElements($(this).parent(), $(this).parent().prev());
+                saveSortOrder();
+            });
+
+            sort_sources.on('click', '.sort-move-down', function (e) {
+                swapElements($(this).parent(), $(this).parent().next());
+                saveSortOrder();
+            });
+
+            sort_sources.on('click', '.sort-hide', function (e) {
+                if ($(this).parent().data('sort-hidden')) {
+                    $(this).parent().data('sort-hidden', null);
+                    $(this).parent().removeClass('list-group-item-danger')
+                } else {
+                    $(this).parent().data('sort-hidden', true);
+                    $(this).parent().addClass('list-group-item-danger')
+                }
+                saveSortOrder();
+            });
+
+            $('.sortable').sortable({
+                tolerance: 'pointer',
+                items: 'li',
+                placeholder: '<li class="list-group-item"></li>'
+            }).bind('sortstart', function (e, ui) {
+            }).bind('sortstop', function (e, ui) {
+            }).bind('sortupdate', function (e, ui) {
+                saveSortOrder();
+            });
+
+            // restore the hidden sources from localStorage
+            var sort_hidden = localStorage.getItem('sort-hidden');
+            if (sort_hidden != null) {
+                var hidden = JSON.parse(sort_hidden);
+                for (var i = 0; i < hidden.length; i++) {
+                    $('div.source[data-source-id="' + hidden[i] + '"]').hide();
+                    $('li.sort-source[data-source-id="' + hidden[i] + '"]').addClass('list-group-item-danger');
+                    $('li.sort-source[data-source-id="' + hidden[i] + '"]').data('sort-hidden', true);
+                }
+            }
+
+            // restore the sort order from localStorage
+            var sort_order = localStorage.getItem('sort-order');
+            if (sort_order != null) {
+                var order = JSON.parse(sort_order);
+                for (var i = 0; i < order.length; i++) {
+                    $('div.source[data-source-id="' + order[i] + '"]').data('order', i);
+                    $('li.sort-source[data-source-id="' + order[i] + '"]').data('order', i);
+                }
+                $('div.sources').sortElements();
+                $('ul.sort-sources').sortElements('li');
+            }
+
+            $('.top-10-show-all').on('click', function(e){
+                $(this).addClass('d-none');
+                $('.top-10-rest').removeClass('d-none');
+                e.preventDefault();
+                return false;
+            })
+
+            $('.sources').masonry();
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    {% regroup feed_list by category as feeds %}
+
+    <div class="modal" tabindex="-1" id="feedModal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Feed' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" tabindex="-1" id="sortModal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{% trans 'Sort feeds' %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <ul class="list-group sortable sort-sources">
+                        {% for c in feeds %}
+                            {% for f in c.list %}
+                                <li class="list-group-item sort-source" data-source-id="{{ f.id }}">
+									{% thumbnail f.favicon "32x32" as im %}
+										<img class="source-img me-1" src="{{ im.url }}">
+									{% endthumbnail %}
+									{{ f }}
+                                    <button
+                                            class="btn btn-sm btn-danger float-end ms-1 sort-hide"
+                                            type="button"><i class="fas fa-times"></i></button>
+                                    <button
+                                            class="btn btn-sm btn-success float-end ms-1 sort-move-down"
+                                            type="button"><i class="fas fa-arrow-down"></i></button>
+                                    <button
+                                            class="btn btn-sm btn-success float-end ms-1 sort-move-up"
+                                            type="button"><i class="fas fa-arrow-up"></i></button>
+                                    <button
+                                            class="btn btn-sm btn-success float-end ms-1 sort-move-top"
+                                            type="button"><i class="fas fa-arrow-up"></i><i class="fas fa-arrow-up"></i></button>
+                                </li>
+                            {% endfor %}
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if top_words.exists %}
+        <div class="row mb-3 text-center">
+            <div class="col-12">
+                {% for tw in top_words.top_10 %}
+                    <a href="/?q={{ tw.word }}"><span class="badge fs-6 {% if tw.word|lower == q|lower %}bg-success{% else %}bg-secondary{% endif %} text-capitalize me-1 mb-2">{{ tw.word }}</span></a>
+                {% endfor %}
+                <a href="" class="top-10-show-all"><span class="badge bg-secondary fs-6 text-capitalize me-1 mb-2">...</span></a>
+                {% for tw in top_words.rest %}
+                    <a href="/?q={{ tw.word }}" class="d-none top-10-rest"><span class="badge {% if tw.word|lower == q|lower %}bg-success{% else %}bg-secondary{% endif %} fs-6 text-capitalize me-1 mb-2">{{ tw.word }}</span></a>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="row sources">
+        {% for category in feeds %}
+            {% if category.grouper.feed_set.count %}
+                {% for feed in category.list %}
+                    {% if feed.entry_set.exists %}
+                        <div class="col-12 col-md-6 col-xl-4 source" data-source-id="{{ feed.id }}">
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <a href="{{ feed.site_url }}" class="no-decoration">
+                                        {% thumbnail feed.favicon "32x32" as im %}
+                                        <img class="source-img me-1" src="{{ im.url }}"> {{ feed.title }}
+                                        {% endthumbnail %}
+                                    </a>
+                                    <a
+                                            class="float-end"
+                                            href=""
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#sortModal"><i class="fas fa-sort"></i></a>
+                                </div>
+                                <div class="card-body">
+                                    <ul>
+                                        {% entry_list feed q=q limit=7 as entry_list %}
+                                        {% for e in entry_list %}
+                                            <li>
+                                                <a href="{{ e.url }}">{{ e }}</a> <span
+                                                    class="{% if e.is_new %}new{% endif %} small text-muted"
+                                                    title="{{ e.created_at|date:"d.m.Y H:i" }}">{{ e.created_at|naturalday }} {{ e.created_at|date:"H:i" }}</span>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+
+                                    <a
+                                            class="card-link no-decoration"
+                                            href=""
+                                            data-modal-title="{{ feed }}"
+                                            data-update-url="{% url 'base:xhr_feed_older_news' feed_id=feed.id %}?q={{ q|default:"" }}"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#feedModal">{% trans 'Older news' %}</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endblock %}

@@ -1,0 +1,77 @@
+{% load base_extras static i18n compress bootstrap5 %}<!DOCTYPE html>
+<html lang="de" data-bs-theme="light">
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+    <title>NeuesVomTage</title>
+    <meta name="description" content="Der Nachrichtenüberblick über alle Zeitungen">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <link rel="shortcut icon" href="{% static 'favicon.ico' %}"/>
+    <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/all.min.css' %}">
+
+    {% compress css %}
+        <link rel="stylesheet" href="{% static 'theme/theme.scss' %}" type="text/x-scss">
+    {% endcompress %}
+    <script src="{% static 'js/theme_switcher.js' %}"></script>
+</head>
+
+<body>
+
+<nav class="navbar navbar-expand-md mb-4 pt-1 pb-1">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">NeuesVomTage</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="{% url 'quiz:index' %}">{% trans 'Quiz' %}</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page"
+                       href="{% url 'base:contact' %}">{% trans 'Contact / Data privacy' %}</a>
+                </li>
+            </ul>
+                <button data-bs-theme-value="light" class="btn btn-outline-secondary mb-2 mb-md-0 me-2"><i class="fas fa-moon fa-fw"></i>
+                    <span class="d-inline d-md-none">{% trans 'Switch theme' %}</span>
+                </button>
+            <form class="d-flex" action="/" method="get">
+                <div class="input-group">
+                    <input class="form-control" name="q" value="{{ q|default:"" }}" type="search"
+                           placeholder="{% trans 'Search' %}" aria-label="Search">
+                    <button class="btn btn-primary" type="submit">{% trans 'Search' %}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message|safe }}</div>
+    {% endfor %}
+
+    {% block content %}{% endblock %}
+
+    <div id="footer">
+        &copy; 2011-2023 Sven Bröckling
+    </div>
+</div>
+
+
+{% compress js %}
+    <script src="{% static 'vendor/jquery/jquery-3.6.0.min.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'vendor/sortable/js/html.sortable.min.js' %}"></script>
+    <script src="{% static 'vendor/masonry/masonry.pkgd.min.js' %}"></script>
+    <script src="{% static 'vendor/fontawesome/js/all.min.js' %}"></script>
+{% endcompress %}
+{% block javascript %}{% endblock %}
+</body>
+</html>
