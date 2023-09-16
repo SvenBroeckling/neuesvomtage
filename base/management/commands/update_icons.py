@@ -5,7 +5,6 @@ import requests
 from PIL import Image
 from django.core.files.base import ContentFile
 from django.core.management import BaseCommand
-from django.db.models import Q
 
 from base.models import Feed
 
@@ -27,26 +26,37 @@ class Command(BaseCommand):
     help = "Update favicons"
 
     def handle(self, *args, **options):
-        for feed in Feed.objects.filter(Q(favicon__isnull=True) | Q(favicon='')):
+        for feed in Feed.objects.all():
 
-            print(feed.site_url)
-            icons = favicon.get(feed.site_url, headers={'User-Agent': USER_AGENT}, timeout=15)
-            icon = get_square_icon(icons)
+
+            try:
+                icons = favicon.get(feed.site_url, headers={'User-Agent': USER_AGENT}, timeout=15)
+                icon = get_square_icon(icons)
+                print(feed.site_url)
+            except:
+                icon = None
+                print(f"SKIP {feed.site_url}")
 
             if icon:
-                response = requests.get(icon.url, stream=True)
-                temp_name = '/tmp/python-favicon.{}'.format(icon.format)
+                try:
+                    response = requests.get(icon.url, stream=True)
+                except:
+                    print(f"SKIP {feed.site_url}")
+                else:
+                    temp_name = '/tmp/python-favicon.{}'.format(icon.format)
 
-                with open(temp_name, 'wb') as image:
-                    for chunk in response.iter_content(1024):
-                        image.write(chunk)
+                    try:
+                        with open(temp_name, 'wb') as image:
+                            for chunk in response.iter_content(1024):
+                                image.write(chunk)
 
-                buffer = BytesIO()
-                with Image.open(temp_name) as image:
-                    image.convert('RGBA')
-                    image.save(buffer, format='PNG')
+                        buffer = BytesIO()
+                        with Image.open(temp_name) as image:
+                            image.convert('RGBA')
+                            image.save(buffer, format='PNG')
 
-                buffer.seek(0)
+                        buffer.seek(0)
+                    except:
+                        print(f"INVALID {feed.site_url}")
 
-                feed.favicon.save(f'{feed.title}.png', ContentFile(buffer.getvalue()), save=True)
-
+                    feed.favicon.save(f'{feed.title}.png', ContentFile(buffer.getvalue()), save=True)
