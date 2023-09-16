@@ -203,8 +203,9 @@
                                 <div class="card-header">
                                     <a href="{{ feed.site_url }}" class="no-decoration">
                                         {% thumbnail feed.favicon "32x32" as im %}
-                                        <img class="source-img me-1" src="{{ im.url }}"> {{ feed.title }}
+                                        <img class="source-img me-1" src="{{ im.url }}">
                                         {% endthumbnail %}
+                                        {{ feed.title }}
                                     </a>
                                     <a
                                             class="float-end"

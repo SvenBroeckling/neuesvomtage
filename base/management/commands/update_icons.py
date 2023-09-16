@@ -58,5 +58,5 @@ class Command(BaseCommand):
                         buffer.seek(0)
                     except:
                         print(f"INVALID {feed.site_url}")
-
-                    feed.favicon.save(f'{feed.title}.png', ContentFile(buffer.getvalue()), save=True)
+                    else:
+                        feed.favicon.save(f'{feed.title}.png', ContentFile(buffer.getvalue()), save=True)
