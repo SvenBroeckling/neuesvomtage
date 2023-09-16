@@ -5,6 +5,7 @@ import requests
 from PIL import Image
 from django.core.files.base import ContentFile
 from django.core.management import BaseCommand
+from django.db.models import Q
 
 from base.models import Feed
 
@@ -26,7 +27,7 @@ class Command(BaseCommand):
     help = "Update favicons"
 
     def handle(self, *args, **options):
-        for feed in Feed.objects.all():
+        for feed in Feed.objects.filter(Q(favicon__exact='') | Q(favicon__isnull=True)):
 
 
             try:
