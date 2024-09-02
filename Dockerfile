@@ -1,23 +1,38 @@
-FROM python:3.11-alpine
+FROM python:3.12 AS builder
 
-RUN apk add --no-cache postgresql-libs gettext zlib libjpeg libwebp libxml2-dev libxslt-dev glib-dev pango
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
-ENV PYTHONUNBUFFERED 1
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+    postgresql-client \
+    && rm -rf /var/lib/apt/lists/*
 
-EXPOSE 8080
-
-RUN mkdir /app
+# Set work directory
 WORKDIR /app
 
-COPY requirements.txt .
+# Install Python dependencies
+COPY requirements.txt /app/
+RUN python -m venv /venv
+RUN /venv/bin/pip install --no-cache-dir -r requirements.txt
 
-RUN apk add --no-cache --virtual .build-deps gcc g++ git openssh musl-dev postgresql-dev zlib-dev jpeg-dev libwebp-dev libffi-dev && \
-    python -m venv venv && \
-    /app/venv/bin/python -m pip install -U pip && \
-    venv/bin/pip install -r requirements.txt --no-cache-dir && \
-    apk --purge del .build-deps
+FROM python:3.12-slim
 
-COPY . .
-RUN chmod +x entrypoint.sh
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+    curl libpq-dev libpango-1.0-0 libpangoft2-1.0-0 libmagic1 ffmpeg poppler-utils \
+    && rm -rf /var/lib/apt/lists/*
+
+
+WORKDIR /app
+
+COPY --from=builder /venv/ /venv/
+COPY . /app/
+
+EXPOSE 8080
+RUN chmod +x /app/entrypoint.sh
 
 ENTRYPOINT ["/app/entrypoint.sh"]

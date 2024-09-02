@@ -124,7 +124,7 @@ INSTALLED_APPS = [
     "django.contrib.humanize",
     "api",
     "compressor",
-    "bootstrap5",
+    "django_bootstrap5",
     "sorl.thumbnail",
     "rest_framework",
     "django_extensions",
