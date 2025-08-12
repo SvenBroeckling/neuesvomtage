@@ -108,5 +108,8 @@ $(function () {
         return false;
     })
 
-    $('.sources').masonry();
+    var isMulti = document.body.classList.contains('layout-multi') || document.documentElement.classList.contains('layout-multi');
+    if (isMulti) {
+        $('.sources').masonry();
+    }
 });

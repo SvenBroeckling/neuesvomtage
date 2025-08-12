@@ -77,46 +77,86 @@
     </div>
   {% endif %}
 
-  <div class="row sources">
+  <div class="view-multi">
+    <div class="row sources">
+      {% for category in feeds %}
+        {% if category.grouper.feed_set.count %}
+          {% for feed in category.list %}
+            {% if feed.entry_set.exists %}
+              <div class="col-12 col-md-6 col-xl-4 source" data-source-id="{{ feed.id }}">
+                <div class="card mb-4">
+                  <div class="card-header">
+                    <a href="{{ feed.site_url }}" class="no-decoration">
+                      {% thumbnail feed.favicon "32x32" as im %}
+                        <img class="source-img me-1" src="{{ im.url }}">
+                      {% endthumbnail %}
+                      {{ feed.title }}
+                    </a>
+                    <a
+                            class="float-end"
+                            href=""
+                            data-bs-toggle="modal"
+                            data-bs-target="#sortModal"><i class="fas fa-sort"></i></a>
+                  </div>
+                  <div class="card-body">
+                    <ul>
+                      {% entry_list feed q=q limit=7 as entry_list %}
+                      {% for e in entry_list %}
+                        <li>
+                          <a href="{{ e.url }}">{{ e }}</a> <span
+                                class="{% if e.is_new %}new{% endif %} small text-muted"
+                                title="{{ e.created_at|date:"d.m.Y H:i" }}">{{ e.created_at|naturalday }} {{ e.created_at|date:"H:i" }}</span>
+                        </li>
+                      {% endfor %}
+                    </ul>
+
+                    <a
+                            class="card-link no-decoration"
+                            href=""
+                            data-modal-title="{{ feed }}"
+                            data-update-url="{% url 'base:xhr_feed_older_news' feed_id=feed.id %}?q={{ q|default:"" }}"
+                            data-bs-toggle="modal"
+                            data-bs-target="#feedModal">{% trans 'Older news' %}</a>
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="view-single">
     {% for category in feeds %}
       {% if category.grouper.feed_set.count %}
         {% for feed in category.list %}
           {% if feed.entry_set.exists %}
-            <div class="col-12 col-md-6 col-xl-4 source" data-source-id="{{ feed.id }}">
-              <div class="card mb-4">
-                <div class="card-header">
-                  <a href="{{ feed.site_url }}" class="no-decoration">
+            <div class="single-feed mb-4 pb-3 border-bottom" data-source-id="{{ feed.id }}">
+              <div class="single-feed-header d-flex align-items-center justify-content-between mb-2">
+                <div>
+                  <a href="{{ feed.site_url }}" class="no-decoration fw-semibold">
                     {% thumbnail feed.favicon "32x32" as im %}
                       <img class="source-img me-1" src="{{ im.url }}">
                     {% endthumbnail %}
                     {{ feed.title }}
                   </a>
-                  <a
-                          class="float-end"
-                          href=""
-                          data-bs-toggle="modal"
-                          data-bs-target="#sortModal"><i class="fas fa-sort"></i></a>
                 </div>
-                <div class="card-body">
-                  <ul>
-                    {% entry_list feed q=q limit=7 as entry_list %}
-                    {% for e in entry_list %}
-                      <li>
-                        <a href="{{ e.url }}">{{ e }}</a> <span
-                              class="{% if e.is_new %}new{% endif %} small text-muted"
-                              title="{{ e.created_at|date:"d.m.Y H:i" }}">{{ e.created_at|naturalday }} {{ e.created_at|date:"H:i" }}</span>
-                      </li>
-                    {% endfor %}
-                  </ul>
-
-                  <a
-                          class="card-link no-decoration"
-                          href=""
-                          data-modal-title="{{ feed }}"
-                          data-update-url="{% url 'base:xhr_feed_older_news' feed_id=feed.id %}?q={{ q|default:"" }}"
-                          data-bs-toggle="modal"
-                          data-bs-target="#feedModal">{% trans 'Older news' %}</a>
-                </div>
+                <a class="text-decoration-none" href="" data-bs-toggle="modal" data-bs-target="#sortModal"><i class="fas fa-sort"></i></a>
+              </div>
+              <ul class="single-feed-list">
+                {% entry_list feed q=q limit=7 as entry_list %}
+                {% for e in entry_list %}
+                  <li class="mb-1">
+                    <a href="{{ e.url }}">{{ e }}</a>
+                    <span class="{% if e.is_new %}new{% endif %} small text-muted ms-2" title="{{ e.created_at|date:"d.m.Y H:i" }}">{{ e.created_at|naturalday }} {{ e.created_at|date:"H:i" }}</span>
+                  </li>
+                {% endfor %}
+              </ul>
+              <div>
+                <a class="no-decoration" href="" data-modal-title="{{ feed }}"
+                   data-update-url="{% url 'base:xhr_feed_older_news' feed_id=feed.id %}?q={{ q|default:"" }}"
+                   data-bs-toggle="modal" data-bs-target="#feedModal">{% trans 'Older news' %}</a>
               </div>
             </div>
           {% endif %}

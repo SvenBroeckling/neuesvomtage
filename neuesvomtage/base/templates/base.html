@@ -10,6 +10,16 @@
 
   <link rel="shortcut icon" href="{% static 'favicon.ico' %}"/>
 
+  <script>
+    // Apply saved layout class ASAP to prevent initial flicker
+    (function(){
+      try {
+        var layout = localStorage.getItem('layout') || 'multi';
+        var cls = layout === 'single' ? 'layout-single' : 'layout-multi';
+        document.documentElement.classList.add(cls);
+      } catch(e) { /* ignore */ }
+    })();
+  </script>
   {% compress css %}
     <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/all.min.css' %}">
     <link rel="stylesheet" href="{% static 'theme/theme.scss' %}" type="text/x-scss">
@@ -41,6 +51,9 @@
               class="fas fa-moon fa-fw"></i>
         <span class="d-inline d-md-none">{% trans 'Switch theme' %}</span>
       </button>
+      <button id="layout-toggle" class="btn btn-outline-secondary mb-2 mb-md-0 me-2" aria-label="{% trans 'Switch layout' %}"><i class="fas fa-columns fa-fw"></i>
+        <span class="d-inline d-md-none">{% trans 'Switch layout' %}</span>
+      </button>
       <form class="d-flex" action="/" method="get">
         <div class="input-group">
           <input class="form-control" name="q" value="{{ q|default:"" }}" type="search"
@@ -65,12 +78,13 @@
 </div>
 
 
-{% compress js %}
+  {% compress js %}
   <script src="{% static 'vendor/jquery/jquery-3.6.0.min.js' %}"></script>
   <script src="{% static 'vendor/bootstrap/dist/js/bootstrap.min.js' %}"></script>
   <script src="{% static 'vendor/sortable/js/html.sortable.min.js' %}"></script>
   <script src="{% static 'vendor/masonry/masonry.pkgd.min.js' %}"></script>
   <script src="{% static 'vendor/fontawesome/js/all.min.js' %}"></script>
+  <script src="{% static 'js/layout_switcher.js' %}"></script>
   <script src="{% static 'js/base.js' %}"></script>
 {% endcompress %}
 {% block javascript %}{% endblock %}

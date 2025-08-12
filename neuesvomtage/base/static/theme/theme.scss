@@ -54,6 +54,34 @@ $color-mode-type: data;
   border-radius: 15px 15px 0 0;
 }
 
+/* Layout switcher */
+.view-single { display: none; }
+.layout-multi .view-multi { display: block; }
+.layout-multi .view-single { display: none; }
+.layout-single .view-multi { display: none; }
+.layout-single .view-single { display: block; }
+
+.view-single .single-feed-list {
+  list-style: none;
+  padding-left: 0;
+  margin-bottom: 0.25rem;
+}
+
+.view-single .single-feed-list a {
+  font-size: 1.125rem; // bigger entries in single-column mode
+  text-decoration: none; // no decoration by default
+}
+
+.view-single .single-feed-list a:hover, .view-single .single-feed-list a:focus {
+  text-decoration: underline; // optional underline on hover/focus for accessibility
+}
+
+.view-single .single-feed {
+  // Provide breathable whitespace, no cards
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+}
+
 /* sortable */
 
 a.sortable-handle {
