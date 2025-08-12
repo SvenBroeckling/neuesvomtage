@@ -12,6 +12,7 @@ BASE_URL = os.environ["BASE_URL"]
 SECRET_KEY = os.environ["SECRET_KEY"]
 
 DEBUG = True if os.environ["DEBUG"] == "True" else False
+DEBUG_TOOLBAR = True if os.environ.get("DEBUG_TOOLBAR", "False") == "True" else False
 ADMINS = (("Sven Bröckling", "sven@broeckling.de"),)
 MANAGERS = ADMINS
 
@@ -56,7 +57,7 @@ STATICFILES_FINDERS = (
 USE_X_FORWARDED_HOST = True
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
-COMPRESS_ENABLED = True
+COMPRESS_ENABLED = not DEBUG
 COMPRESS_ROOT = STATIC_ROOT
 COMPRESS_PRECOMPILERS = (("text/x-scss", "django_libsass.SassCompiler"),)
 
@@ -113,7 +114,6 @@ INSTALLED_APPS = [
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
-    "django.contrib.sites",
     "django.contrib.messages",
     "django.contrib.admin",
     "django.contrib.staticfiles",

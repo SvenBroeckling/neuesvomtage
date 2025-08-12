@@ -1,7 +1,6 @@
 # -*- coding: UTF-8 -*-
 
 from django import template
-from base64 import b64encode
 
 register = template.Library()
 
@@ -35,3 +34,7 @@ def entry_list(feed, q=None, limit=7):
     if q is not None:
         entries = entries.filter(title__icontains=q)
     return entries.order_by('-created_at')[:limit]
+
+@register.filter
+def strip_schema_from_url(url):
+    return url.split('://')[-1].replace('www.', '').strip('/')

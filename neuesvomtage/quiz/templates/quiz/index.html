@@ -2,41 +2,55 @@
 {% load base_extras thumbnail %}
 
 {% block content %}
-  <div class="row">
-    <div class="col-12 col-lg-8 offset-lg-2">
-      <div class="card">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-10 col-xl-8 py-5">
+      <div class="card shadow-sm border-0">
+        <div class="card-header d-flex align-items-center justify-content-between">
+            <div>Finde die richtige Quelle</div>
+          {% with s=request.session.streak|default:0 %}
+            <div class="badge bg-light text-dark fs-6">
+              <i class="fas fa-trophy text-warning me-1"></i>
+              {{ s }}
+            </div>
+          {% endwith %}
+        </div>
+
         <div class="card-body">
-          <div class="row mb-4">
-            <div class="col-md-10">
-              <h2 class="quote">&bdquo;{{ headline }}&ldquo;</h2>
-            </div>
-            <div class="col-md-2">
-              {% with s=request.session.streak|default:0 %}
-                <h1 class="float-end {% if s > 0 %}text-success{% endif %}">
-                  <i class="fas fa-trophy"></i>{{ s }}
-                </h1>
-              {% endwith %}
-            </div>
+          <div class="text-center mb-4">
+            <blockquote class="blockquote m-0 p-4">
+              <p class="h4 mb-0">&bdquo;{{ headline }}&ldquo;</p>
+            </blockquote>
           </div>
 
+          <div class="row g-3 g-md-4">
+            {% for a in answers %}
+              <div class="col-12 col-md-6">
+                <form action="" method="post" class="h-100">
+                  {% csrf_token %}
+                  <input type="hidden" name="headline" value="{{ headline.id }}">
+                  <input type="hidden" name="answer" value="{{ a.id }}">
 
-          {% for a in answers %}
-            <form action="" method="post">
-              {% csrf_token %}
-              <input type="hidden" name="headline" value="{{ headline.id }}">
-              <input type="hidden" name="answer" value="{{ a.id }}">
-
-              <button class="btn btn-secondary w-100 mb-2 answer">
-                {% thumbnail a.favicon "120x120" as im %}
-                  <img class="me-0" src="{{ im.url }}"><br>
-                {% endthumbnail %}
-                {{ a }}
-              </button>
-            </form>
-          {% endfor %}
+                  <button class="btn btn-outline-primary w-100 h-100 p-3 text-start d-flex align-items-center game-option" type="submit">
+                    {% thumbnail a.favicon "120x120" as im %}
+                      <img class="rounded me-3 flex-shrink-0" src="{{ im.url }}" alt="{{ a }}" width="60" height="60">
+                    {% endthumbnail %}
+                    <div class="flex-grow-1">
+                      <div class="d-flex align-items-center mb-1">
+                        <span class="badge rounded-pill bg-primary-subtle text-primary-emphasis me-2">
+                          {% if forloop.counter == 1 %}A{% elif forloop.counter == 2 %}B{% elif forloop.counter == 3 %}C{% else %}D{% endif %}
+                        </span>
+                        <span class="fw-semibold">{{ a }}</span>
+                      </div>
+                      <div class="small text-muted">{{ a.site_url|strip_schema_from_url }}</div>
+                    </div>
+                    <i class="fas fa-chevron-right text-primary ms-2"></i>
+                  </button>
+                </form>
+              </div>
+            {% endfor %}
+          </div>
         </div>
       </div>
     </div>
-
   </div>
 {% endblock %}

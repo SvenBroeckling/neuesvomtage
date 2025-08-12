@@ -15,7 +15,7 @@ class IndexView(TemplateView):
         feeds = Feed.objects.filter(include_in_quiz=True)
         headline = Entry.objects.filter(feed__in=feeds).order_by("?")[0]
         answers = [headline.feed] + list(
-            feeds.exclude(id=headline.feed.id).order_by("?")[:2]
+            feeds.exclude(id=headline.feed.id).order_by("?")[:3]
         )
         random.shuffle(answers)
 
