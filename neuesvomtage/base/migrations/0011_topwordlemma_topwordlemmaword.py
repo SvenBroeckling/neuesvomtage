@@ -7,23 +7,45 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('base', '0010_remove_feed_image_remove_feed_image_large'),
+        ("base", "0010_remove_feed_image_remove_feed_image_large"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='TopWordLemma',
+            name="TopWordLemma",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('lemma', models.CharField(max_length=400)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("lemma", models.CharField(max_length=400)),
             ],
         ),
         migrations.CreateModel(
-            name='TopWordLemmaWord',
+            name="TopWordLemmaWord",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('word', models.CharField(max_length=400)),
-                ('lemma', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='base.topwordlemma')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("word", models.CharField(max_length=400)),
+                (
+                    "lemma",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="base.topwordlemma",
+                    ),
+                ),
             ],
         ),
     ]

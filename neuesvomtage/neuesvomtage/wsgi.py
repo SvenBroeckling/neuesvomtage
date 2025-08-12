@@ -11,8 +11,8 @@ import os
 import sys
 
 sys.stdout = sys.stderr
-sys.path.insert(0, os.path.dirname(globals()['__file__']))
-sys.path.insert(0, os.path.join(os.path.dirname(globals()['__file__']), '..'))
+sys.path.insert(0, os.path.dirname(globals()["__file__"]))
+sys.path.insert(0, os.path.join(os.path.dirname(globals()["__file__"]), ".."))
 
 from django.core.wsgi import get_wsgi_application
 

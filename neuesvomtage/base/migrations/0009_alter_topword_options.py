@@ -6,12 +6,12 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('base', '0008_topword'),
+        ("base", "0008_topword"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='topword',
-            options={'ordering': ('-count',)},
+            name="topword",
+            options={"ordering": ("-count",)},
         ),
     ]

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import os
 
 from django.contrib import messages
@@ -25,7 +24,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 _ = lambda x: x
 
 USE_I18N = True
-USE_L10N = True
 TIME_ZONE = "Europe/Berlin"
 LANGUAGE_CODE = "de"
 LANGUAGES = (

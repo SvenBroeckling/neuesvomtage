@@ -1,13 +1,11 @@
-# -*- coding: UTF-8 -*-
-
 from django import template
 
 register = template.Library()
 
 
-@register.filter(name='chunks')
+@register.filter(name="chunks")
 def chunks(iterable, chunk_size):
-    if not hasattr(iterable, '__iter__'):
+    if not hasattr(iterable, "__iter__"):
         # can't use "return" and "yield" in the same function
         yield iterable
     else:
@@ -33,8 +31,9 @@ def entry_list(feed, q=None, limit=7):
     entries = feed.entry_set.all()
     if q is not None:
         entries = entries.filter(title__icontains=q)
-    return entries.order_by('-created_at')[:limit]
+    return entries.order_by("-created_at")[:limit]
+
 
 @register.filter
 def strip_schema_from_url(url):
-    return url.split('://')[-1].replace('www.', '').strip('/')
+    return url.split("://")[-1].replace("www.", "").strip("/")

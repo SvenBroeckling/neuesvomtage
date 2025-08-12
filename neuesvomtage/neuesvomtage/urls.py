@@ -7,12 +7,11 @@ from django.views.static import serve
 from base import views
 
 urlpatterns = [
-    path('', views.IndexView.as_view(), name='index'),
-    path('base/', include('base.urls')),
-    path('quiz/', include('quiz.urls')),
-
-    path('admin/doc/', include('django.contrib.admindocs.urls')),
-    path('admin/', admin.site.urls),
+    path("", views.IndexView.as_view(), name="index"),
+    path("base/", include("base.urls")),
+    path("quiz/", include("quiz.urls")),
+    path("admin/doc/", include("django.contrib.admindocs.urls")),
+    path("admin/", admin.site.urls),
 ]
 
 if settings.DEBUG:

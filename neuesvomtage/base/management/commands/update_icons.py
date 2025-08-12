@@ -9,7 +9,7 @@ from django.db.models import Q
 
 from base.models import Feed
 
-USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.47 Safari/537.36'
+USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.47 Safari/537.36"
 
 
 def get_square_icon(icons):
@@ -27,11 +27,12 @@ class Command(BaseCommand):
     help = "Update favicons"
 
     def handle(self, *args, **options):
-        for feed in Feed.objects.filter(Q(favicon__exact='') | Q(favicon__isnull=True)):
-
+        for feed in Feed.objects.filter(Q(favicon__exact="") | Q(favicon__isnull=True)):
 
             try:
-                icons = favicon.get(feed.site_url, headers={'User-Agent': USER_AGENT}, timeout=15)
+                icons = favicon.get(
+                    feed.site_url, headers={"User-Agent": USER_AGENT}, timeout=15
+                )
                 icon = get_square_icon(icons)
                 print(feed.site_url)
             except:
@@ -44,20 +45,24 @@ class Command(BaseCommand):
                 except:
                     print(f"SKIP {feed.site_url}")
                 else:
-                    temp_name = '/tmp/python-favicon.{}'.format(icon.format)
+                    temp_name = "/tmp/python-favicon.{}".format(icon.format)
 
                     try:
-                        with open(temp_name, 'wb') as image:
+                        with open(temp_name, "wb") as image:
                             for chunk in response.iter_content(1024):
                                 image.write(chunk)
 
                         buffer = BytesIO()
                         with Image.open(temp_name) as image:
-                            image.convert('RGBA')
-                            image.save(buffer, format='PNG')
+                            image.convert("RGBA")
+                            image.save(buffer, format="PNG")
 
                         buffer.seek(0)
                     except:
                         print(f"INVALID {feed.site_url}")
                     else:
-                        feed.favicon.save(f'{feed.title}.png', ContentFile(buffer.getvalue()), save=True)
+                        feed.favicon.save(
+                            f"{feed.title}.png",
+                            ContentFile(buffer.getvalue()),
+                            save=True,
+                        )

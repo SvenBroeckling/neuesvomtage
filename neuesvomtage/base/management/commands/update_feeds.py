@@ -22,4 +22,5 @@ class Command(BaseCommand):
             pool.terminate()
 
         Entry.objects.filter(
-            fetched_at__lte=datetime.datetime.now() - datetime.timedelta(days=60)).delete()
+            fetched_at__lte=datetime.datetime.now() - datetime.timedelta(days=60)
+        ).delete()

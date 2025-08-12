@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('base', '0006_alter_feed_image_alter_feed_image_large'),
+        ("base", "0006_alter_feed_image_alter_feed_image_large"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='feed',
-            name='favicon',
-            field=models.ImageField(blank=True, null=True, upload_to='favicons'),
+            model_name="feed",
+            name="favicon",
+            field=models.ImageField(blank=True, null=True, upload_to="favicons"),
         ),
     ]

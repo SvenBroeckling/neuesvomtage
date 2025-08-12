@@ -6,16 +6,16 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('base', '0009_alter_topword_options'),
+        ("base", "0009_alter_topword_options"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='feed',
-            name='image',
+            model_name="feed",
+            name="image",
         ),
         migrations.RemoveField(
-            model_name='feed',
-            name='image_large',
+            model_name="feed",
+            name="image_large",
         ),
     ]
