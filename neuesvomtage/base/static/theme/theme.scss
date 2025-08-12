@@ -12,7 +12,7 @@
 }
 
 .source-img {
-  height: 20px;
+  height: 32px;
 }
 
 .source ul {
@@ -81,18 +81,9 @@ $color-mode-type: data;
 }
 
 .view-single .single-feed-list a {
-  font-size: 1.125rem; // bigger entries in single-column mode
-  text-decoration: none; // no decoration by default
-}
-
-.view-single .single-feed-list a:hover, .view-single .single-feed-list a:focus {
-  text-decoration: underline; // optional underline on hover/focus for accessibility
-}
-
-.view-single .single-feed {
-  // Provide breathable whitespace, no cards
-  padding-left: 0.25rem;
-  padding-right: 0.25rem;
+  font-size: 1.125rem;
+  text-decoration: none;
+  color: $gray-100;
 }
 
 /* sortable */
