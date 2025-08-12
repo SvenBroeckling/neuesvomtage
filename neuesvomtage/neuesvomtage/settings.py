@@ -56,14 +56,6 @@ COMPRESS_ENABLED = True
 COMPRESS_ROOT = STATIC_ROOT
 COMPRESS_PRECOMPILERS = (("text/x-scss", "django_libsass.SassCompiler"),)
 
-REST_FRAMEWORK = {
-    "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly"
-    ],
-    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
-    "PAGE_SIZE": 15,
-}
-
 if os.environ.get("DATABASE_ENGINE", None) is None:
     DATABASES = {
         "default": {
@@ -122,11 +114,9 @@ INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.staticfiles",
     "django.contrib.humanize",
-    "api",
     "compressor",
     "django_bootstrap5",
     "sorl.thumbnail",
-    "rest_framework",
     "django_extensions",
     "cachalot",
     "base",

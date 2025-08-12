@@ -1,4 +1,4 @@
-FROM python:3.12 AS builder
+FROM python:3.13 AS builder
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
@@ -6,33 +6,36 @@ ENV PYTHONUNBUFFERED=1
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
     postgresql-client \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Set work directory
 WORKDIR /app
 
-# Install Python dependencies
-COPY requirements.txt /app/
-RUN python -m venv /venv
-RUN /venv/bin/pip install --no-cache-dir -r requirements.txt
+RUN curl --proto '=https' --tlsv1.2 -LsSf https://github.com/astral-sh/uv/releases/download/0.6.12/uv-installer.sh | sh
 
-FROM python:3.12-slim
+# Install Python dependencies
+COPY pyproject.toml /app/
+RUN /root/.local/bin/uv sync
+
+FROM python:3.13-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-    curl libpq-dev libpango-1.0-0 libpangoft2-1.0-0 libmagic1 ffmpeg poppler-utils \
+    curl libpq-dev libmagic1 \
     && rm -rf /var/lib/apt/lists/*
 
 
 WORKDIR /app
 
-COPY --from=builder /venv/ /venv/
-COPY . /app/
+COPY --from=builder /app/.venv/ /app/.venv/
+COPY --from=builder /app/uv.lock /app/
+COPY neuesvomtage/ /app/
+COPY entrypoint.sh /app/
 
 EXPOSE 8080
 RUN chmod +x /app/entrypoint.sh
-
 ENTRYPOINT ["/app/entrypoint.sh"]

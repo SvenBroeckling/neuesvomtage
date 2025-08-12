@@ -1,6 +1,7 @@
 #!/bin/sh
 
-/venv/bin/python manage.py migrate
-/venv/bin/python manage.py collectstatic --noinput
+/app/.venv/bin/python manage.py migrate
+/app/.venv/bin/python manage.py collectstatic --noinput
+/app/.venv/bin/python manage.py compress -f
 
-/venv/bin/gunicorn neuesvomtage.asgi:application --bind 0.0.0.0:8080 -w 7 -k uvicorn.workers.UvicornWorker
+/app/.venv/bin/hypercorn -w 5 -b 0.0.0.0:8080 neuesvomtage.asgi:application

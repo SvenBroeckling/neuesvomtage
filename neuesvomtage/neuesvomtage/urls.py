@@ -10,8 +10,6 @@ urlpatterns = [
     path('base/', include('base.urls')),
     path('quiz/', include('quiz.urls')),
 
-    path('api/', include('api.urls')),
-
     path('admin/doc/', include('django.contrib.admindocs.urls')),
     path('admin/', admin.site.urls),
 ]

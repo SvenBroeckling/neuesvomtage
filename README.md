@@ -10,10 +10,10 @@ To run the project in a docker compose environment, all you need is an installed
 
 ```shell
 $ docker compose up
-$ docker compose exec web /venv/bin/python manage.py loaddata contrib/demo_data.json
-$ docker compose exec web /venv/bin/python manage.py update_feeds
-$ docker compose exec web /venv/bin/python manage.py update_icons
-$ docker compose exec web /venv/bin/python manage.py generate_top_words
+$ docker compose exec web /app/.venv/bin/python manage.py loaddata contrib/demo_data.json
+$ docker compose exec web /app/.venv/bin/python manage.py update_feeds
+$ docker compose exec web /app/.venv/bin/python manage.py update_icons
+$ docker compose exec web /app/.venv/bin/python manage.py generate_top_words
 ```
 
 Note that the configuration in the .env.docker file contains only example values and enables DEBUG mode, among other things. The values should be adjusted for a public site.
