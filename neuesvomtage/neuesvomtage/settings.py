@@ -36,7 +36,7 @@ SESSION_COOKIE_AGE = 60 * 60 * 24 * 365  # 1 year
 
 
 # Media
-MEDIA_URL = "/media/"
+MEDIA_URL = os.environ.get("MEDIA_URL", "/media/")
 MEDIA_ROOT = os.path.join(
     BASE_DIR, os.environ.get("MEDIA_ROOT_RELATIVE", "media_files")
 )
