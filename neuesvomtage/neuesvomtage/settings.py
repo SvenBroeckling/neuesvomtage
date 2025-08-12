@@ -36,11 +36,15 @@ SESSION_COOKIE_AGE = 60 * 60 * 24 * 365  # 1 year
 
 
 # Media
-MEDIA_ROOT = os.path.join(BASE_DIR, "media_files")
 MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(
+    BASE_DIR, os.environ.get("MEDIA_ROOT_RELATIVE", "media_files")
+)
 
-STATIC_ROOT = os.path.join(BASE_DIR, "static_files")
-STATIC_URL = "/static/"
+STATIC_URL = os.environ.get("STATIC_URL", "static/")
+STATIC_ROOT = os.path.join(
+    BASE_DIR, os.environ.get("STATIC_ROOT_RELATIVE", "static_files")
+)
 
 STATICFILES_FINDERS = (
     "django.contrib.staticfiles.finders.FileSystemFinder",
