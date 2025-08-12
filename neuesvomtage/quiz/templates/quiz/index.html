@@ -2,41 +2,41 @@
 {% load base_extras thumbnail %}
 
 {% block content %}
-        <div class="row">
-            <div class="col-12 col-lg-8 offset-lg-2">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="row mb-4">
-                            <div class="col-md-10">
-                                <h2 class="quote">&bdquo;{{ headline }}&ldquo;</h2>
-                            </div>
-                            <div class="col-md-2">
-                                {% with s=request.session.streak|default:0 %}
-                                    <h1 class="float-end {% if s > 0 %}text-success{% endif %}">
-                                        <i class="fas fa-trophy"></i>{{ s }}
-                                    </h1>
-                                {% endwith %}
-                            </div>
-                        </div>
-
-
-                        {% for a in answers %}
-                            <form action="" method="post">
-                                {% csrf_token %}
-                                <input type="hidden" name="headline" value="{{ headline.id }}">
-                                <input type="hidden" name="answer" value="{{ a.id }}">
-
-                                <button class="btn btn-secondary w-100 mb-2 answer">
-                                    {% thumbnail a.favicon "120x120" as im %}
-                                        <img class="me-0" src="{{ im.url }}"><br>
-                                    {% endthumbnail %}
-                                    {{ a }}
-                                </button>
-                            </form>
-                        {% endfor %}
-                    </div>
-                </div>
+  <div class="row">
+    <div class="col-12 col-lg-8 offset-lg-2">
+      <div class="card">
+        <div class="card-body">
+          <div class="row mb-4">
+            <div class="col-md-10">
+              <h2 class="quote">&bdquo;{{ headline }}&ldquo;</h2>
             </div>
+            <div class="col-md-2">
+              {% with s=request.session.streak|default:0 %}
+                <h1 class="float-end {% if s > 0 %}text-success{% endif %}">
+                  <i class="fas fa-trophy"></i>{{ s }}
+                </h1>
+              {% endwith %}
+            </div>
+          </div>
 
+
+          {% for a in answers %}
+            <form action="" method="post">
+              {% csrf_token %}
+              <input type="hidden" name="headline" value="{{ headline.id }}">
+              <input type="hidden" name="answer" value="{{ a.id }}">
+
+              <button class="btn btn-secondary w-100 mb-2 answer">
+                {% thumbnail a.favicon "120x120" as im %}
+                  <img class="me-0" src="{{ im.url }}"><br>
+                {% endthumbnail %}
+                {{ a }}
+              </button>
+            </form>
+          {% endfor %}
         </div>
+      </div>
+    </div>
+
+  </div>
 {% endblock %}
